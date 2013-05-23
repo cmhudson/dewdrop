@@ -17,6 +17,7 @@ how to get your development environment running smoothly:
 
 * Brad Griffith, Delta Systems
 * Darby Felton, Delta Systems
+* Charles Hudson, Delta Systems
 
 
 Quick Start
