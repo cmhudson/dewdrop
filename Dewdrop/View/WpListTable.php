@@ -1,15 +1,12 @@
 <?php
 
-namespace Admin\Beer;
-
-//use Dewdrop\Db\Select;
-//use Dewdrop\Db\Table;
+namespace Dewdrop\View;
 
 
 class WpListTable extends \WP_List_Table {
 
-    public $module_name;
-    private $primary_key;
+    public $moduleName;
+    private $primaryKey;
     private $linkColumns = array();
     private $model;
     private $stmt;
@@ -41,9 +38,9 @@ class WpListTable extends \WP_List_Table {
         $this->pluralTitle   = $model->getPluralTitle();
 
         if ($module) {
-            $this->module_name = $module;
+            $this->moduleName = $module;
         } else {
-            $this->module_name = $this->singularTitle;
+            $this->moduleName = $this->singularTitle;
         }
 
 
@@ -75,7 +72,7 @@ class WpListTable extends \WP_List_Table {
 
     public function set_primary_key($key)
     {
-        $this->primary_key = $key;
+        $this->primaryKey = $key;
     }
 
     public function setColumns($columns)
@@ -107,11 +104,11 @@ class WpListTable extends \WP_List_Table {
     private function renderEditLinkCell($item,$column_name)
     {
         $value = $item[$column_name];
-        $id    = $item[$this->primary_key];
+        $id    = $item[$this->primaryKey];
         return sprintf(
             '<a href="?page=%s/Edit&%s=%s" >%s</a>',
-            $this->module_name,
-            $this->primary_key,
+            $this->moduleName,
+            $this->primaryKey,
             $id,
             $value
         );
@@ -121,7 +118,7 @@ class WpListTable extends \WP_List_Table {
         return sprintf(
             '<input type="checkbox" name="%1$s[]" value="%2$s" />',
             /*$1%s*/ $this->_args['singular'],  //Let's simply repurpose the table's singular label ("movie")
-            /*$2%s*/ $item[$this->primary_key]                //The value of the checkbox should be the record's id
+            /*$2%s*/ $item[$this->primaryKey]                //The value of the checkbox should be the record's id
         );
     }
 
@@ -135,7 +132,7 @@ class WpListTable extends \WP_List_Table {
         $sortable = array();
         foreach ($columns as $slug => $label) {
             $sorted = false;
-            if ($slug == $this->primary_key) {
+            if ($slug == $this->primaryKey) {
                 $sorted = true;
             }
             $sortable[$slug] = array($slug,false);
@@ -230,7 +227,7 @@ class WpListTable extends \WP_List_Table {
         foreach ($rs as $row) {
 
             foreach ($this->get_columns() as $id => $title) {
-                $data[$row[$this->primary_key]][$id] = $row[$id];
+                $data[$row[$this->primaryKey]][$id] = $row[$id];
             }
 
         }

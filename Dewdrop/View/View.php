@@ -154,7 +154,7 @@ class View
     }
 
     /**
-     * When calling an unkonwn method on this view, pass the method name to
+     * When calling an unknown method on this view, pass the method name to
      * the helper() method and call the helper's direct() method.  Using the
      * __call() magic method in this way allows using helpers in this manner:
      *
