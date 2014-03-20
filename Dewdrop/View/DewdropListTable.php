@@ -3,19 +3,19 @@
 namespace Dewdrop\View;
 
 
-class WpListTable extends \WP_List_Table {
+class DewdropListTable extends \WP_List_Table {
 
     public $moduleName;
-    private $primaryKey;
-    private $linkColumns = array();
-    private $model;
-    private $stmt;
+    protected $primaryKey;
+    protected $linkColumns = array();
+    protected $model;
+    protected $stmt;
     public $items;
 
-    private $columns;
+    protected $columns;
 
-    private $singularTitle;
-    private $pluralTitle;
+    protected $singularTitle;
+    protected $pluralTitle;
 
     /**
      * @param \Dewdrop\Db\Table $model
@@ -24,32 +24,39 @@ class WpListTable extends \WP_List_Table {
      * @param null $module
      * @internal param $moduleName
      */
-    public function __construct($model,$stmt = null,$columns = null,$module = null)
+    public function __construct($model = null,$stmt = null,$columns = null,$module = null)
     {
-        $this->model = $model;
+        $this->setModel($model);
+        $this->setStatement($stmt);
+        $this->setColumns($columns);
+        $this->setModule($model);
 
-        if ($stmt) {
-            $this->stmt = $stmt;
-        } else if (method_exists($model,'selectAdminListing')) {
+    }
+
+    public function setup()
+    {
+        $model = null;
+        if ($this->model) {
+            $model = $this->model;
+        }
+
+        if (! $this->stmt && $model && method_exists($model,'selectAdminListing')) {
             $this->stmt = $model->selectAdminListing();
         }
 
-        $this->singularTitle = $model->getSingularTitle();
-        $this->pluralTitle   = $model->getPluralTitle();
+        if ($model) {
+            $this->singularTitle = $model->getSingularTitle();
+            $this->pluralTitle   = $model->getPluralTitle();
 
-        if ($module) {
-            $this->moduleName = $module;
-        } else {
+            $keys = $model->getPrimaryKey();
+            $this->setPrimaryKey($keys[0]);
+        }
+
+        if (! $this->moduleName) {
             $this->moduleName = $this->singularTitle;
         }
 
-
-        $keys = $model->getPrimaryKey();
-        $this->set_primary_key($keys[0]);
-
-        if ($columns) {
-            $this->setColumns($columns);
-        } else {
+        if (! $this->columns && $model) {
             $columns = array();
             foreach ($model->getRowColumns() as $column) {
                 //var_dump($model->field($column));
@@ -67,10 +74,24 @@ class WpListTable extends \WP_List_Table {
         ) );
 
         $this->prepare_items();
-
     }
 
-    public function set_primary_key($key)
+    public function setModule($module)
+    {
+        $this->moduleName = $module;
+    }
+
+    public function setModel($model)
+    {
+        $this->model = $model;
+    }
+
+    public function setStatement($stmt)
+    {
+        $this->stmt = $stmt;
+    }
+
+    public function setPrimaryKey($key)
     {
         $this->primaryKey = $key;
     }
@@ -80,7 +101,7 @@ class WpListTable extends \WP_List_Table {
         $this->columns = $columns;
     }
 
-    public function set_link_column($fieldKey)
+    public function setLinkColumn($fieldKey)
     {
         if (! in_array($fieldKey,$this->linkColumns)) {
             $this->linkColumns[] = $fieldKey;
@@ -101,7 +122,7 @@ class WpListTable extends \WP_List_Table {
 
     }
 
-    private function renderEditLinkCell($item,$column_name)
+    protected function renderEditLinkCell($item,$column_name)
     {
         $value = $item[$column_name];
         $id    = $item[$this->primaryKey];

@@ -63,7 +63,8 @@ class View
         'wpinputcheckbox'  => '\Dewdrop\View\Helper\WpInputCheckbox',
         'wpselect'         => '\Dewdrop\View\Helper\WpSelect',
         'wptitle'          => '\Dewdrop\View\Helper\WpTitle',
-        'wpwrap'           => '\Dewdrop\View\Helper\WpWrap'
+        'wpwrap'           => '\Dewdrop\View\Helper\WpWrap',
+        'wplisttable'      => '\Dewdrop\View\Helper\WpListTable'
     );
 
     /**
